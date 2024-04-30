@@ -1,7 +1,5 @@
 package uk.ac.le.co2103.part2;
 
-import static uk.ac.le.co2103.part2.CreateListActivity.RESULT_DUPLICATE;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,7 +18,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ShoppingListAdapter.OnItemClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int ADD_SHOPPINGLIST_REQUEST_CODE = 1;
@@ -45,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         ShoppingListAdapter adapter = new ShoppingListAdapter();
         recyclerView.setAdapter(adapter);
 
+        adapter.setOnItemClickListener(this); // Set the click listener
         shoppingListViewModel = new ViewModelProvider(this).get(ShoppingListViewModel.class);
         shoppingListViewModel.getAllShoppingLists().observe(this, adapter::submitList);
     }
@@ -62,12 +61,7 @@ public class MainActivity extends AppCompatActivity {
             if (result.getResultCode() == RESULT_OK) {
                 assert result.getData() != null;
                 handleActivityResult(result.getData());
-
-
-            }
-
-
-            else {
+            } else {
                 Toast.makeText(getApplicationContext(), R.string.empty_not_saved, Toast.LENGTH_LONG).show();
             }
         });
@@ -84,22 +78,21 @@ public class MainActivity extends AppCompatActivity {
                     "://" + getResources().getResourcePackageName(resourceId)
                     + '/' + getResources().getResourceTypeName(resourceId)
                     + '/' + getResources().getResourceEntryName(resourceId));
-
-
         } else {
             imageUri = Uri.parse(imageUriString);
-            // Here, you have the URI of the selected image
-            // Log.d(TAG, "Received image URI: " + imageUri);
-             }
-
-
-            Log.d(TAG, "### Received image URI: " + imageUri);
-
-
-            ShoppingList shoppingList = new ShoppingList(text, imageUri.toString()); // Assuming ShoppingList constructor accepts URI
-            shoppingListViewModel.insert(shoppingList);
         }
-
+        Log.d(TAG, "### Received image URI: " + imageUri);
+        ShoppingList shoppingList = new ShoppingList(text, imageUri.toString());
+        shoppingListViewModel.insert(shoppingList);
     }
 
+    @Override
+    public void onItemClick(int position) {
+        // Retrieve the clicked shopping list from the ViewModel
+        ShoppingList clickedShoppingList = shoppingListViewModel.getAllShoppingLists().getValue().get(position);
 
+        // Display the text of the clicked shopping list
+        Toast.makeText(this, "Clicked: " + clickedShoppingList.getName(), Toast.LENGTH_SHORT).show();
+    }
+
+}

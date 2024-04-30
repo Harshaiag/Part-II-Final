@@ -1,4 +1,4 @@
-package uk.ac.le.co2103.part2;
+/*package uk.ac.le.co2103.part2;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,3 +25,4 @@ public class ShoppingListViewHolder extends RecyclerView.ViewHolder {
         return new ShoppingListViewHolder(view);
     }
 }
+*/

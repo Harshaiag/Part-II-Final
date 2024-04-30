@@ -33,7 +33,7 @@ public class CreateListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_list);
+        setContentView(R.layout.activity_create_shopping_list);
 
         imageView = findViewById(R.id.imageView);
         Button galleryButton = findViewById(R.id.gallery);

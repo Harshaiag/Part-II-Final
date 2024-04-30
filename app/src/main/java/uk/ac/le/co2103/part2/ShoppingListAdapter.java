@@ -15,15 +15,26 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ShoppingListAdapter extends ListAdapter<ShoppingList, ShoppingListAdapter.ShoppingListViewHolder> {
 
+    private static OnItemClickListener listener;
+
     public ShoppingListAdapter() {
         super(new ShoppingListDiff());
+    }
+
+    // Interface for item click listener
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        ShoppingListAdapter.listener = listener;
     }
 
     @NonNull
     @Override
     public ShoppingListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.recyclerview_item, parent, false);
+                .inflate(R.layout.activity_list_shopping_list, parent, false);
         return new ShoppingListViewHolder(itemView);
     }
 
@@ -41,6 +52,17 @@ public class ShoppingListAdapter extends ListAdapter<ShoppingList, ShoppingListA
             super(itemView);
             nameTextView = itemView.findViewById(R.id.name);
             imageView = itemView.findViewById(R.id.imageview);
+
+            // Set click listeners for both TextView and ImageView
+            nameTextView.setOnClickListener(v -> onItemClick(getAdapterPosition()));
+            imageView.setOnClickListener(v -> onItemClick(getAdapterPosition()));
+        }
+
+        private void onItemClick(int position) {
+            if (listener != null && position != RecyclerView.NO_POSITION) {
+                listener.onItemClick(position);
+
+            }
         }
 
         public void bind(ShoppingList shoppingList) {
