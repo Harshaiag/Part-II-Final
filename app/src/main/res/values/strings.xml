@@ -1,12 +1,14 @@
 <resources>
-    <string name="app_name">PART2 Shopping List</string>
+    <string name="app_name">Shopping List</string>
     <string name="add_product">Add Product</string>
-    <string name="hint_product">Product Name...</string>
+    <string name="hint_product">Product Name</string>
     <string name="button_save">Save</string>
     <string name="add_button">Add</string>
     <string name="empty_not_saved">Try again</string>
     <string name="load_image_from_gallery">Load Image From Gallery</string>
     <string name="enter_shoppinglist_name">Enter ShoppingList Name</string>
+    <string name="duplicate_not_saved">The name has to be unique</string>
+    <string name="duplicate_shopping_name">The name must be unique</string>
 
     <string-array name="labels_unit">
         <item>Unit</item>

@@ -1,5 +1,7 @@
 package uk.ac.le.co2103.part2;
 
+import static uk.ac.le.co2103.part2.CreateListActivity.RESULT_DUPLICATE;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -7,12 +9,16 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,8 +60,14 @@ public class MainActivity extends AppCompatActivity {
     private void setupActivityResultLauncher() {
         launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK) {
+                assert result.getData() != null;
                 handleActivityResult(result.getData());
-            } else {
+
+
+            }
+
+
+            else {
                 Toast.makeText(getApplicationContext(), R.string.empty_not_saved, Toast.LENGTH_LONG).show();
             }
         });
@@ -63,10 +75,31 @@ public class MainActivity extends AppCompatActivity {
 
     private void handleActivityResult(Intent data) {
         String text = data.getStringExtra("Text");
-        Log.d(TAG, "Received item: " + text);
+        Log.d(TAG, "#####Received item: " + text);
+        Uri imageUri;
+        String imageUriString = data.getStringExtra("ImageUri");
+        if (Objects.equals(imageUriString, "")) {
+            int resourceId = R.drawable.shoppingcart; // Your drawable resource ID
+            imageUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE +
+                    "://" + getResources().getResourcePackageName(resourceId)
+                    + '/' + getResources().getResourceTypeName(resourceId)
+                    + '/' + getResources().getResourceEntryName(resourceId));
 
-      //  int imageAlpha = data.getIntExtra("imageAlpha", R.drawable.shoppingcart); // Default value
-        ShoppingList shoppingList = new ShoppingList(text, R.drawable.shoppingcart);
-        shoppingListViewModel.insert(shoppingList);
+
+        } else {
+            imageUri = Uri.parse(imageUriString);
+            // Here, you have the URI of the selected image
+            // Log.d(TAG, "Received image URI: " + imageUri);
+             }
+
+
+            Log.d(TAG, "### Received image URI: " + imageUri);
+
+
+            ShoppingList shoppingList = new ShoppingList(text, imageUri.toString()); // Assuming ShoppingList constructor accepts URI
+            shoppingListViewModel.insert(shoppingList);
+        }
+
     }
-}
+
+

@@ -18,4 +18,8 @@ public interface ShoppingDao {
 
     @Query("DELETE FROM shoppinglist")
     void deleteAll();
+
+    @Query("SELECT * FROM shoppinglist WHERE name = :name LIMIT 1")
+    ShoppingList getShoppingListByName(String name);
+
 }

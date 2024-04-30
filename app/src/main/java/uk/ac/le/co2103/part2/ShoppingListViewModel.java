@@ -8,6 +8,8 @@ import androidx.lifecycle.LiveData;
 import java.util.List;
 
 public class ShoppingListViewModel extends AndroidViewModel {
+
+
     private ShoppingListRepository repo;
 
     private final LiveData<List<ShoppingList>> allShoppingLists;
@@ -21,5 +23,10 @@ public class ShoppingListViewModel extends AndroidViewModel {
     public LiveData<List<ShoppingList>> getAllShoppingLists() { return allShoppingLists; }
 
     public void insert(ShoppingList shoppingList) { repo.insert(shoppingList); }
+
+
+    public ShoppingList getShoppingListByName(String name) {
+        return repo.getShoppingListByName(name);
+    }
 }
 

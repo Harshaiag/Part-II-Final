@@ -1,8 +1,12 @@
 package uk.ac.le.co2103.part2;
+
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+
 
 @Entity(tableName = "shoppinglist")
 public class ShoppingList {
@@ -14,10 +18,10 @@ public class ShoppingList {
     @ColumnInfo(name = "name")
 
     private String name;
-    private int image;
+    private String image;
 
     // Constructor
-    public ShoppingList(@NonNull String name, int image) {
+    public ShoppingList(@NonNull String name, String image) {
         this.name = name;
         this.image = image;
     }
@@ -40,11 +44,11 @@ public class ShoppingList {
         this.name = name;
     }
 
-    public int getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(int image) {
+    public void setImage(String image) {
         this.image = image;
     }
 }

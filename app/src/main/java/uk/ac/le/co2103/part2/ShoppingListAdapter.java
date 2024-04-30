@@ -1,5 +1,7 @@
 package uk.ac.le.co2103.part2;
 
+import android.annotation.SuppressLint;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +45,7 @@ public class ShoppingListAdapter extends ListAdapter<ShoppingList, ShoppingListA
 
         public void bind(ShoppingList shoppingList) {
             nameTextView.setText(shoppingList.getName());
-            imageView.setImageResource(shoppingList.getImage());
+            imageView.setImageURI(Uri.parse(shoppingList.getImage()));
         }
     }
 
@@ -54,10 +56,11 @@ public class ShoppingListAdapter extends ListAdapter<ShoppingList, ShoppingListA
             return oldItem.getListId() == newItem.getListId();
         }
 
+        @SuppressLint("DiffUtilEquals")
         @Override
         public boolean areContentsTheSame(@NonNull ShoppingList oldItem, @NonNull ShoppingList newItem) {
             return oldItem.getName().equals(newItem.getName()) &&
-                    oldItem.getImage() == newItem.getImage();
+                    oldItem.getImage().equals(newItem.getImage());
         }
     }
 }

@@ -1,5 +1,4 @@
 package uk.ac.le.co2103.part2;
-
 import android.app.Application;
 
 import androidx.lifecycle.LiveData;
@@ -26,4 +25,7 @@ public class ShoppingListRepository {
         });
     }
 
+    ShoppingList getShoppingListByName(String name) {
+        return shoppingDao.getShoppingListByName(name);
+    }
 }
