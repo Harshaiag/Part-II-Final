@@ -16,8 +16,10 @@ public class ShoppingList {
 
 
     @ColumnInfo(name = "name")
-
+    @NonNull
     private String name;
+
+    @ColumnInfo(name = "image")
     private String image;
 
     // Constructor
@@ -36,11 +38,12 @@ public class ShoppingList {
         this.listId = listId;
     }
 
+    @NonNull
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(@NonNull String name) {
         this.name = name;
     }
 

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 
 import java.util.List;
 
@@ -13,6 +14,10 @@ public interface ShoppingDao {
     @Insert
     void insert(ShoppingList shoppingList);
 
+    @Transaction
+    @Query("DELETE FROM shoppinglist WHERE listId = :listId")
+    void deleteShoppingListWithProducts(int listId);
+
     @Query("SELECT * FROM shoppinglist ORDER BY name ASC")
     LiveData<List<ShoppingList>> getShoppingList();
 
@@ -20,6 +25,6 @@ public interface ShoppingDao {
     void deleteAll();
 
     @Query("SELECT * FROM shoppinglist WHERE name = :name LIMIT 1")
-    ShoppingList getShoppingListByName(String name);
+    LiveData<ShoppingList> getShoppingListByName(String name);
 
 }

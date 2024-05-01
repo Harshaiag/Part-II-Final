@@ -2,12 +2,14 @@ package uk.ac.le.co2103.part2;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -93,6 +95,40 @@ public class MainActivity extends AppCompatActivity implements ShoppingListAdapt
 
         // Display the text of the clicked shopping list
         Toast.makeText(this, "Clicked: " + clickedShoppingList.getName(), Toast.LENGTH_SHORT).show();
+
+        // Start the ShoppingListActivity with the clicked shopping list ID
+        Intent intent = new Intent(MainActivity.this, ShoppingListActivity.class);
+        intent.putExtra("shoppingListId", clickedShoppingList.getListId()); // Pass the shopping list ID as an extra
+        startActivity(intent);
+    }
+
+
+    @Override
+    public void onItemLongClick(int position) {
+        // Retrieve the clicked shopping list from the ViewModel
+        ShoppingList clickedShoppingList = shoppingListViewModel.getAllShoppingLists().getValue().get(position);
+
+        // Show a confirmation dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Are you sure you want to delete this shopping list?")
+                .setCancelable(true)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Delete the shopping list and associated products
+                        deleteShoppingList(clickedShoppingList);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void deleteShoppingList(ShoppingList shoppingList) {
+        shoppingListViewModel.deleteShoppingListWithProducts(shoppingList);
     }
 
 }

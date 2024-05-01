@@ -26,7 +26,11 @@ public class ShoppingListViewModel extends AndroidViewModel {
 
 
     public ShoppingList getShoppingListByName(String name) {
-        return repo.getShoppingListByName(name);
+        return repo.getShoppingListByName(name).getValue();
     }
+    public void deleteShoppingListWithProducts(ShoppingList shoppingList) {
+        ShoppingListRepository.deleteShoppingListWithProducts(shoppingList);
+    }
+
 }
 

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,6 +25,8 @@ public class ShoppingListAdapter extends ListAdapter<ShoppingList, ShoppingListA
     // Interface for item click listener
     public interface OnItemClickListener {
         void onItemClick(int position);
+
+        void onItemLongClick(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -34,7 +37,7 @@ public class ShoppingListAdapter extends ListAdapter<ShoppingList, ShoppingListA
     @Override
     public ShoppingListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.activity_list_shopping_list, parent, false);
+                .inflate(R.layout.activity_one_shopping_list, parent, false);
         return new ShoppingListViewHolder(itemView);
     }
 
@@ -48,14 +51,19 @@ public class ShoppingListAdapter extends ListAdapter<ShoppingList, ShoppingListA
         private final TextView nameTextView;
         private final ImageView imageView;
 
-        private ShoppingListViewHolder(View itemView) {
+        private final RelativeLayout relativeLayout;
+
+        private ShoppingListViewHolder( View itemView) {
             super(itemView);
-            nameTextView = itemView.findViewById(R.id.name);
-            imageView = itemView.findViewById(R.id.imageview);
+            this.nameTextView = itemView.findViewById(R.id.name);
+            this.imageView = itemView.findViewById(R.id.imageview);
+            relativeLayout = itemView.findViewById(R.id.relative_layout);
+
 
             // Set click listeners for both TextView and ImageView
-            nameTextView.setOnClickListener(v -> onItemClick(getAdapterPosition()));
-            imageView.setOnClickListener(v -> onItemClick(getAdapterPosition()));
+            relativeLayout.setOnClickListener(v -> onItemClick(getAdapterPosition()));
+
+
         }
 
         private void onItemClick(int position) {

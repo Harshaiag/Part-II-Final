@@ -20,8 +20,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".CreateListActivity"
             android:exported="true">
         </activity>
+
+        <!-- ShoppingListActivity with MainActivity as its parent -->
+        <activity android:name=".ShoppingListActivity"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
+        <!-- AddProductActivity -->
+        <activity android:name=".AddProductActivity"
+            android:exported="true">
+        </activity>
+
+        <!-- Add other activities related to the shopping list feature -->
+
     </application>
 </manifest>
