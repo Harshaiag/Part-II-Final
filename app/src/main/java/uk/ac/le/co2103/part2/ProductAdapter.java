@@ -21,6 +21,10 @@ public class ProductAdapter extends ListAdapter<Product, ProductAdapter.ProductV
     // Interface for item click listener
     public interface OnItemClickListener {
         void onItemClick(int position);
+
+        void onItemLongClick(int position);
+
+
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -54,6 +58,13 @@ public class ProductAdapter extends ListAdapter<Product, ProductAdapter.ProductV
 
             // Set click listener
             itemView.setOnClickListener(v -> onItemClick(getAdapterPosition()));
+            itemView.setOnLongClickListener(v -> {
+                if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
+                    listener.onItemLongClick(getAdapterPosition());
+                    return true;
+                }
+                return false;
+            });
         }
 
         private void onItemClick(int position) {

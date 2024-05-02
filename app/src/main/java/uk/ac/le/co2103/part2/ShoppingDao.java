@@ -24,7 +24,9 @@ public interface ShoppingDao {
     @Query("DELETE FROM shoppinglist")
     void deleteAll();
 
-    @Query("SELECT * FROM shoppinglist WHERE name = :name LIMIT 1")
-    LiveData<ShoppingList> getShoppingListByName(String name);
+
+    @Query("SELECT COUNT(*) FROM shoppinglist WHERE LOWER(name) = LOWER(:name)")
+    int getShoppingListCountByName(String name);
+
 
 }

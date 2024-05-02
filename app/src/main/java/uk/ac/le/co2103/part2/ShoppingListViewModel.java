@@ -25,12 +25,15 @@ public class ShoppingListViewModel extends AndroidViewModel {
     public void insert(ShoppingList shoppingList) { repo.insert(shoppingList); }
 
 
-    public ShoppingList getShoppingListByName(String name) {
-        return repo.getShoppingListByName(name).getValue();
+    int getShoppingListCountByName(String name)
+    {
+        return repo.getShoppingListCountByName(name);
     }
     public void deleteShoppingListWithProducts(ShoppingList shoppingList) {
-        ShoppingListRepository.deleteShoppingListWithProducts(shoppingList);
+        repo.deleteShoppingListWithProducts(shoppingList);
     }
+
+
 
 }
 

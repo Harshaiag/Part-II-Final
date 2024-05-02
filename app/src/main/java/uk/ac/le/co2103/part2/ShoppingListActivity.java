@@ -1,20 +1,20 @@
 package uk.ac.le.co2103.part2;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.List;
 
 public class ShoppingListActivity extends AppCompatActivity implements ProductAdapter.OnItemClickListener {
 
@@ -48,12 +48,7 @@ public class ShoppingListActivity extends AppCompatActivity implements ProductAd
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
 
         // Observe the list of products and update the UI
-        productViewModel.getProductsByListId(shoppingListId).observe(this, new Observer<List<Product>>() {
-            @Override
-            public void onChanged(List<Product> products) {
-                adapter.submitList(products);
-            }
-        });
+        productViewModel.getProductsByListId(shoppingListId).observe(this, products -> adapter.submitList(products));
 
         // Initialize ActivityResultLauncher for AddProductActivity
         addProductLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -64,7 +59,7 @@ public class ShoppingListActivity extends AppCompatActivity implements ProductAd
                     int quantity = data.getIntExtra("productQuantity", 0);
                     String unit = data.getStringExtra("productUnit");
 
-                    // Add the product to the shopping list
+                    // Add the product to the shopping list in a separate thread
                     addProductToDatabase(name, quantity, unit);
                 }
             }
@@ -78,9 +73,22 @@ public class ShoppingListActivity extends AppCompatActivity implements ProductAd
     }
 
     private void addProductToDatabase(String name, int quantity, String unit) {
-        Product product = new Product(shoppingListId, name, quantity, unit);
-        productViewModel.insert(product);
+        // Perform database operation in a separate thread
+        new Thread(() -> {
+            // Check if the product already exists in the database for the current shopping list ID
+            int productCount = productViewModel.getProductCountByNameAndListId(name, shoppingListId);
+
+            if (productCount > 0) {
+                // Product already exists, display toast message
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Product Already Exists", Toast.LENGTH_SHORT).show());
+            } else {
+                // Product does not exist, insert it into the database
+                Product product = new Product(shoppingListId, name, quantity, unit);
+                productViewModel.insert(product);
+            }
+        }).start();
     }
+
 
     @Override
     public void onItemClick(int position) {
@@ -90,5 +98,35 @@ public class ShoppingListActivity extends AppCompatActivity implements ProductAd
         // Show a toast message with a brief description of the item
         String message = "Name: " + product.getName() + ", Quantity: " + product.getQuantity() + " " + product.getUnit();
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onItemLongClick(int position) {
+        Product product = adapter.getCurrentList().get(position);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Options");
+        builder.setMessage("Choose an option:");
+
+        builder.setPositiveButton("Edit", (dialog, which) -> {
+            // Edit the product in a separate thread using a Handler
+            new Handler(Looper.getMainLooper()).post(() -> {
+                Intent intent = new Intent(ShoppingListActivity.this, UpdateProductActivity.class);
+                intent.putExtra("productId", product.getProductId());
+                startActivity(intent);
+            });
+        });
+
+        builder.setNegativeButton("Delete", (dialog, which) -> {
+            // Delete the product from the database
+            deleteProduct(product);
+        });
+
+        builder.setNeutralButton("Cancel", null);
+        builder.show();
+    }
+
+    private void deleteProduct(Product product) {
+        productViewModel.deleteProduct(product.getProductId());
+        Toast.makeText(this, "Product deleted", Toast.LENGTH_SHORT).show();
     }
 }

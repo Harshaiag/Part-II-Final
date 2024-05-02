@@ -23,8 +23,6 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity implements ShoppingListAdapter.OnItemClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final int ADD_SHOPPINGLIST_REQUEST_CODE = 1;
-
     private ShoppingListViewModel shoppingListViewModel;
     private ActivityResultLauncher<Intent> launcher;
 
@@ -70,12 +68,29 @@ public class MainActivity extends AppCompatActivity implements ShoppingListAdapt
     }
 
     private void handleActivityResult(Intent data) {
+        if (data == null) {
+            Log.e(TAG, "Intent data is null");
+            return;
+        }
+
         String text = data.getStringExtra("Text");
-        Log.d(TAG, "#####Received item: " + text);
+        if (text == null || text.isEmpty()) {
+            Log.e(TAG, "Text is null or empty");
+            return;
+        }
+
+        Log.d(TAG, "Received item: " + text);
+
+        // Check if shopping list already exists
+        if (shoppingListViewModel.getShoppingListCountByName(text) >= 1) {
+            Toast.makeText(this, "Shopping list already exists", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Uri imageUri;
         String imageUriString = data.getStringExtra("ImageUri");
-        if (Objects.equals(imageUriString, "")) {
-            int resourceId = R.drawable.shoppingcart; // Your drawable resource ID
+        if (imageUriString == null || imageUriString.isEmpty()) {
+            int resourceId = R.drawable.shoppingcart; // Default drawable resource ID
             imageUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE +
                     "://" + getResources().getResourcePackageName(resourceId)
                     + '/' + getResources().getResourceTypeName(resourceId)
@@ -83,10 +98,14 @@ public class MainActivity extends AppCompatActivity implements ShoppingListAdapt
         } else {
             imageUri = Uri.parse(imageUriString);
         }
-        Log.d(TAG, "### Received image URI: " + imageUri);
+
+        Log.d(TAG, "Received image URI: " + imageUri);
+
+        // Create and insert shopping list
         ShoppingList shoppingList = new ShoppingList(text, imageUri.toString());
         shoppingListViewModel.insert(shoppingList);
     }
+
 
     @Override
     public void onItemClick(int position) {
@@ -102,33 +121,26 @@ public class MainActivity extends AppCompatActivity implements ShoppingListAdapt
         startActivity(intent);
     }
 
-
     @Override
     public void onItemLongClick(int position) {
-        // Retrieve the clicked shopping list from the ViewModel
-        ShoppingList clickedShoppingList = shoppingListViewModel.getAllShoppingLists().getValue().get(position);
 
-        // Show a confirmation dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Are you sure you want to delete this shopping list?")
-                .setCancelable(true)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // Delete the shopping list and associated products
-                        deleteShoppingList(clickedShoppingList);
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
+        builder.setTitle("Delete");
+
+        builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ShoppingList clickedShoppingList = shoppingListViewModel.getAllShoppingLists().getValue().get(position);
+                deleteShoppingList(clickedShoppingList);
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
+
+
     }
 
     private void deleteShoppingList(ShoppingList shoppingList) {
         shoppingListViewModel.deleteShoppingListWithProducts(shoppingList);
     }
-
 }

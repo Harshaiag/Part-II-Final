@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="uk.ac.le.co2103.part2">
 
     <!-- Add permission here -->
@@ -38,7 +39,10 @@
             android:exported="true">
         </activity>
 
-        <!-- Add other activities related to the shopping list feature -->
+        <activity android:name=".UpdateProductActivity"
+            android:exported="true"
+            tools:ignore="Instantiatable">
+        </activity>
 
     </application>
 </manifest>

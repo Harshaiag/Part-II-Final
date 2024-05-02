@@ -20,7 +20,7 @@ public abstract class ShoppingListDB extends RoomDatabase {
     public abstract ProductDao productDao();
 
     private static volatile ShoppingListDB INSTANCE;
-    private static final int NUMBER_OF_THREADS = 4;
+    private static final int NUMBER_OF_THREADS = 15;
     static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
@@ -32,6 +32,7 @@ public abstract class ShoppingListDB extends RoomDatabase {
                                     ShoppingListDB.class, "shoppingcart_db")
                             .fallbackToDestructiveMigration()
                             .addCallback(sRoomDatabaseCallback)
+                            .allowMainThreadQueries()
                             .build();
                 }
             }

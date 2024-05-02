@@ -12,6 +12,14 @@ public class ProductViewModel extends AndroidViewModel {
     private ProductRepository repo;
     private LiveData<List<Product>> productsByListId;
 
+    public ProductRepository getRepo() {
+        return repo;
+    }
+
+    public void setRepo(ProductRepository repo) {
+        this.repo = repo;
+    }
+
     public ProductViewModel(Application application) {
         super(application);
         repo = new ProductRepository(application);
@@ -24,7 +32,7 @@ public class ProductViewModel extends AndroidViewModel {
         return productsByListId;
     }
 
-    public LiveData<Product> getProductById(int productId) {
+    public Product getProductById(int productId) {
         return repo.getProductById(productId);
     }
 
@@ -39,4 +47,10 @@ public class ProductViewModel extends AndroidViewModel {
     public void deleteProduct(int productId) {
         repo.deleteProduct(productId);
     }
+
+
+    public int getProductCountByNameAndListId(String name, int listId) {
+        return repo.getProductCountByNameAndListId(name, listId);
+    }
+
 }

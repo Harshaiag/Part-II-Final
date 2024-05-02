@@ -33,11 +33,17 @@ public class ShoppingListRepository {
         });
     }
 
-    LiveData<ShoppingList> getShoppingListByName(String name) {
-        return shoppingDao.getShoppingListByName(name);
+  /*  LiveData<Boolean> getShoppingListByName(String name) {
+        return shoppingDao.doesShoppingListExist(name);
+    } */
+
+    int getShoppingListCountByName(String name)
+    {
+        return shoppingDao.getShoppingListCountByName(name);
     }
 
-    public static void deleteShoppingListWithProducts(ShoppingList shoppingList) {
+
+    public void deleteShoppingListWithProducts(ShoppingList shoppingList) {
         ShoppingListDB.databaseWriteExecutor.execute(() -> {
             shoppingDao.deleteShoppingListWithProducts(shoppingList.getListId());
         });

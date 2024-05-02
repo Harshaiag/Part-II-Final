@@ -4,7 +4,7 @@
     <string name="hint_product">Product Name</string>
     <string name="button_save">Save</string>
     <string name="add_button">Add</string>
-    <string name="empty_not_saved">Try again</string>
+    <string name="empty_not_saved">Empty String is not allowed</string>
     <string name="load_image_from_gallery">Load Image From Gallery</string>
     <string name="enter_shoppinglist_name">Enter ShoppingList Name</string>
     <string name="duplicate_not_saved">The name has to be unique</string>

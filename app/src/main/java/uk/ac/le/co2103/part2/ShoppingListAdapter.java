@@ -53,23 +53,28 @@ public class ShoppingListAdapter extends ListAdapter<ShoppingList, ShoppingListA
 
         private final RelativeLayout relativeLayout;
 
-        private ShoppingListViewHolder( View itemView) {
+        private ShoppingListViewHolder(View itemView) {
             super(itemView);
             this.nameTextView = itemView.findViewById(R.id.name);
             this.imageView = itemView.findViewById(R.id.imageview);
             relativeLayout = itemView.findViewById(R.id.relative_layout);
 
-
-            // Set click listeners for both TextView and ImageView
+            // Set click listeners for both click and long click
             relativeLayout.setOnClickListener(v -> onItemClick(getAdapterPosition()));
-
-
+            relativeLayout.setOnLongClickListener(v -> {
+                if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
+                    listener.onItemLongClick(getAdapterPosition());
+                    return true;
+                }
+                return false;
+            });
         }
+
+
 
         private void onItemClick(int position) {
             if (listener != null && position != RecyclerView.NO_POSITION) {
                 listener.onItemClick(position);
-
             }
         }
 

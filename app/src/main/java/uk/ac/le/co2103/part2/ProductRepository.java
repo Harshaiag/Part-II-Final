@@ -1,13 +1,11 @@
 package uk.ac.le.co2103.part2;
 
-
 import android.app.Application;
-
 import androidx.lifecycle.LiveData;
-
 import java.util.List;
 
 public class ProductRepository {
+
     private ProductDao productDao;
     private LiveData<List<Product>> productsByListId;
 
@@ -20,7 +18,7 @@ public class ProductRepository {
         return productDao.getProductsByListId(listId);
     }
 
-    LiveData<Product> getProductById(int productId) {
+    Product getProductById(int productId) {
         return productDao.getProductById(productId);
     }
 
@@ -40,5 +38,24 @@ public class ProductRepository {
         ShoppingListDB.databaseWriteExecutor.execute(() -> {
             productDao.deleteProduct(productId);
         });
+    }
+
+    // Getter for ProductDao
+    public ProductDao getProductDao() {
+        return productDao;
+    }
+
+    // Getter for LiveData<List<Product>> productsByListId
+    public LiveData<List<Product>> getProductsByListIdLiveData(int listId) {
+        if (productsByListId == null) {
+            productsByListId = productDao.getProductsByListId(listId);
+        }
+        return productsByListId;
+    }
+
+
+
+    int getProductCountByNameAndListId(String name, int listId) {
+        return productDao.getProductCountByNameAndListId(name, listId);
     }
 }
